@@ -1,10 +1,41 @@
-const store = require('../../store/dummy');
+const nanoid = require('nanoid');
 const TABLA = 'user';
 
-function list(){
-    return store.list(TABLA)
-}
+module.exports = function (injectStore) {
 
-module.exports = {
-    list
+    let store = injectStore;
+    if (!store) {
+        store = require('../../store/dummy');
+    }
+
+    function list() {
+        return store.list(TABLA)
+    }
+
+    function get(id) {
+        return store.get(TABLA, id);
+    }
+
+    function updsert(body) {
+        const user = {
+            name: body.name
+        }
+        if (body.id) {
+            user.id = body.id;
+        } else {
+            user.id = nanoid();
+        }
+        return store.updsert(TABLA, user);
+    }
+
+    function remove(id) {
+        return store.remove(id);
+    }
+
+    return {
+        list,
+        get,
+        updsert,
+        remove
+    };
 }

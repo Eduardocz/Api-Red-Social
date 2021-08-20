@@ -7,21 +7,26 @@ const db = {
     ]
 }
 
-function list(tabla) {
+async function list(tabla) {
     return db[tabla];
 }
 
-function get(tabla, id) {
-    let col = list(tabla);
-    return col.filter(item => item.id === id)[0] || null;
+async function get(tabla, id) {
+    let col = await list(tabla);
+
+    return col.find(item => item.id == id)|| null;
 }
 
-function upsert(tabla, data) {
-    db[collection.push(data)];
+async function upsert(tabla, data) {
+    let col = await list(tabla);
+    const newCol = col.push(data);
+    return newCol
 }
 
-function remove(tabla, id) {
-    return true
+async function remove(tabla, id) {
+    let col = await list(tabla);
+    delete col[id];
+    return col
 }
 
 module.exports = {
